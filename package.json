@@ -1,0 +1,23 @@
+{
+  "name": "my-express-server",
+  "version": "1.0.0",
+  "description": "My First Express Server",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andriindocoder/node-ref.git"
+  },
+  "author": "Angela Yu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andriindocoder/node-ref/issues"
+  },
+  "homepage": "https://github.com/andriindocoder/node-ref#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
