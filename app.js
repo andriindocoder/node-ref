@@ -3,11 +3,16 @@ const https = require('https');
 
 const app = express();
 const url =
-  'http://api.openweathermap.org/data/2.5/weather?q=Paris&appid=3cbfea738d409eb1692515dd7947cf7b';
+  'https://api.openweathermap.org/data/2.5/weather?q=Bandung&appid=3cbfea738d409eb1692515dd7947cf7b&units=metric';
 
 app.get('/', (req, res) => {
   https.get(url, (response) => {
-    console.log(response);
+    response.on('data', function (data) {
+      const weatherData = JSON.parse(data);
+      const temp = weatherData.main.feels_like;
+      const weatherDescription = weatherData.weather[0].description;
+      console.log(weatherDescription);
+    });
   });
 
   res.send('Server is up and running');
