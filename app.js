@@ -7,19 +7,26 @@ app.get("/", (req, res) => {
 })
 
 app.get("/game/:gameTitle/:gameCreator", (req, res) => {
-	const name = "myName"
 	const title = req.params.gameTitle;
 	const creator = req.params.gameCreator;
 	res.render("game.ejs", {
 		title,
-		creator,
-		name
+		creator
 	});
 })
 
-app.get("/game/:gameTitle", (req, res) => {
-	const title = req.params.gameTitle;
-	res.send("Enjoy " + title);
+app.get("/gamelist", (req, res) => {
+	const games = [
+		{title: "Fortnite", creator: "Epic Games"},
+		{title: "Dirty Bomb", creator: "Splash Damage"},
+		{title: "Battlefield V", creator: "EA Games"},
+		{title: "Zelda BOTW", creator: "Nintendo"}
+	];
+
+
+	res.render("gamelist.ejs", {
+		gameslist: games
+	});
 })
 
 app.get("*", (req, res) => {

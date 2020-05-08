@@ -7,6 +7,10 @@
 <body>
 	<h1>Game Title: <%= title %></h1>
 	<h3>Game Creator: <%= creator %></h3>
-	<p>Author: <%= name %></p>
+	<% if(title == 'GTA'){ %>
+	<p>Description : GTA itu super seru.</p>
+	<% } else { %>
+	<p>Description : No GTA no Party.</p>
+	<% } %>
 </body>
 </html>

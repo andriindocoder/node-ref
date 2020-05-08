@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>GameList</title>
+</head>
+<body>
+	<h1>List of Our Games: </h1>
+	<% for(i=0;i<gameslist.length;i++) { %>
+		<div style="border-style: solid; padding: 5px; margin: 50px; max-width: 200px">
+			<h4 style="color: blue;">Game: <%= gameslist[i].title %></h4>
+			<h5 style="color: red;">Creator: <%= gameslist[i].creator %></h5>
+		</div>
+	<% } %>
+</body>
+</html>
