@@ -1,5 +1,15 @@
 <%- include("partials/header") %>
 
-<h1>The Pictures</h1>
+<h1>The Pictures on Page <%= pageNumber %></h1>
+<div class="row">
+<% for(let i=0;i<picData.length;i++) { %>
+	<div style="border: 2px solid black; width: 290px; background-color: <%= picData[i].color %>; color: #fff">
+		<img src="<%= picData[i].urls.small %>" style="width: 286px; height: 180px;">
+		<p>By. <%= picData[i].user.name %> on <%= picData[i].created_at %></p>
+		<p>Dimensions: <%= picData[i].width %> X <%= picData[i].height %></p>
+		<p>Likes: <%= picData[i].likes %></p>
+	</div>
+<% } %>
+</div>
 
 <%- include("partials/footer") %>
