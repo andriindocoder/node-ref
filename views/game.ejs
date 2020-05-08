@@ -1,11 +1,11 @@
 <%- include("partials/header") %>
-	<div style="padding-top: 70px;">
-		<h1>Game Title: <%= title %></h1>
-		<h3>Game Creator: <%= creator %></h3>
-		<% if(title == 'GTA'){ %>
-		<p>Description : GTA itu super seru.</p>
-		<% } else { %>
-		<p>Description : No GTA no Party.</p>
-		<% } %>
+	<div id="game">
+		<h1>Alternative content</h1>
+		<p><a href="http://www.adobe.com/go/getflashplayer"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" /></a></p>
 	</div>
+
+	<script type="text/javascript" src="/swf/swfobject.js"></script>
+	<script type="text/javascript">
+	swfobject.embedSWF("/games/mad.swf", "game", "300", "140", "9.0.0", "/swf/expressInstall.swf");
+	</script>	
 <%- include("partials/footer") %>
