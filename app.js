@@ -2,14 +2,18 @@ const express = require('express');
 
 const app = express();
 
+app.use(express.static("public"));
+
+app.set("view engine", "ejs");
+
 app.get("/", (req, res) => {
-	res.render("homepage.ejs");
+	res.render("homepage");
 })
 
 app.get("/game/:gameTitle/:gameCreator", (req, res) => {
 	const title = req.params.gameTitle;
 	const creator = req.params.gameCreator;
-	res.render("game.ejs", {
+	res.render("game", {
 		title,
 		creator
 	});
@@ -24,7 +28,7 @@ app.get("/gamelist", (req, res) => {
 	];
 
 
-	res.render("gamelist.ejs", {
+	res.render("gamelist", {
 		gameslist: games
 	});
 })
