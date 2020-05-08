@@ -1,9 +1,11 @@
 <%- include("partials/header") %>
-	<h1>Game Title: <%= title %></h1>
-	<h3>Game Creator: <%= creator %></h3>
-	<% if(title == 'GTA'){ %>
-	<p>Description : GTA itu super seru.</p>
-	<% } else { %>
-	<p>Description : No GTA no Party.</p>
-	<% } %>
+	<div style="padding-top: 70px;">
+		<h1>Game Title: <%= title %></h1>
+		<h3>Game Creator: <%= creator %></h3>
+		<% if(title == 'GTA'){ %>
+		<p>Description : GTA itu super seru.</p>
+		<% } else { %>
+		<p>Description : No GTA no Party.</p>
+		<% } %>
+	</div>
 <%- include("partials/footer") %>
