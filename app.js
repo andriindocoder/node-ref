@@ -3,11 +3,18 @@ const express = require('express');
 const app = express();
 
 app.get("/", (req, res) => {
-	res.send("Welcome to my website");
+	res.render("homepage.ejs");
 })
 
-app.get("/hello", (req, res) => {
-	res.send("Hello and Welcome");
+app.get("/game/:gameTitle/:gameCreator", (req, res) => {
+	const name = "myName"
+	const title = req.params.gameTitle;
+	const creator = req.params.gameCreator;
+	res.render("game.ejs", {
+		title,
+		creator,
+		name
+	});
 })
 
 app.get("/game/:gameTitle", (req, res) => {
