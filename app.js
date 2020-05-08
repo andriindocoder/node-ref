@@ -35,29 +35,31 @@ app.get("/list", (req, res) => {
 })
 
 app.get("/pics", (req, res) => {
-	const url = 'https://api.unsplash.com/photos?client_id=&order_by=popular&page=1';
+	let searchTerm = req.query.searchterm;
+	let page = req.query.page;
+	const url = 'https://api.unsplash.com/search/photos?client_id=&query=' + searchTerm + '&page=' + page;
 
-	// request(url, function(error, response, body) {
-	// 	if(error){
-	// 		console.log(error);
-	// 	}else{
-	// 		res.render("pictures", {
-	// 			picData: JSON.parse(body),
-	// 			pageNumber: 1
-	// 		});
-	// 	}
-	// })
-	rp(url)
-	    .then(function (htmlString) {
-	    	const data = JSON.parse(htmlString);
-	    	res.render("pictures", {
-	    		picData: data,
-	    		pageNumber:1
-	    	});
-	    })
-	    .catch(function (err) {
-	        console.log(err);
-	    });
+	request(url, function(error, response, body) {
+		if(error){
+			console.log(error);
+		}else{
+			res.render("pictures", {
+				picData: JSON.parse(body),
+				pageNumber: 1
+			});
+		}
+	})
+	// rp(url)
+	//     .then(function (htmlString) {
+	//     	const data = JSON.parse(htmlString);
+	//     	res.render("pictures", {
+	//     		picData: data,
+	//     		pageNumber:1
+	//     	});
+	//     })
+	//     .catch(function (err) {
+	//         console.log(err);
+	//     });
 })
 
 app.get("/pics/:page", (req, res) => {
@@ -85,6 +87,10 @@ app.get("/pics/:page", (req, res) => {
 	    .catch(function (err) {
 	        console.log(err);
 	    });
+})
+
+app.get("/search", (req, res) => {
+	res.render("search");
 })
 
 app.get("*", (req, res) => {

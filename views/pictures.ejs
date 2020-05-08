@@ -2,12 +2,12 @@
 
 <h1>The Pictures on Page <%= pageNumber %></h1>
 <div class="row">
-<% for(let i=0;i<picData.length;i++) { %>
-	<div style="border: 2px solid black; width: 290px; background-color: <%= picData[i].color %>; color: #fff">
-		<img src="<%= picData[i].urls.small %>" style="width: 286px; height: 180px;">
-		<p>By. <%= picData[i].user.name %> on <%= picData[i].created_at %></p>
-		<p>Dimensions: <%= picData[i].width %> X <%= picData[i].height %></p>
-		<p>Likes: <%= picData[i].likes %></p>
+<% for(let i=0;i<picData.results.length;i++) { %>
+	<div style="border: 2px solid black; width: 290px; background-color: <%= picData.results[i].color %>; color: #fff">
+		<img src="<%= picData.results[i].urls.small %>" style="width: 286px; height: 180px;">
+		<p>By. <%= picData.results[i].user.name %> on <%= picData.results[i].created_at %></p>
+		<p>Dimensions: <%= picData.results[i].width %> X <%= picData.results[i].height %></p>
+		<p>Likes: <%= picData.results[i].likes %></p>
 	</div>
 <% } %>
 </div>

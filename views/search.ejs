@@ -1,0 +1,15 @@
+<%- include("partials/header") %>
+
+<h1>Enter search term</h1>
+
+<form action="/pics" method="GET">
+  <div class="form-group">
+    <label for="exampleInputEmail1">Search</label>
+    <input type="text" class="form-control" placeholder="Search picture" name="searchterm">
+    <label for="exampleInputEmail1">Page</label>
+    <input type="text" class="form-control" value="1" name="page">
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<%- include("partials/footer") %>
