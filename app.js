@@ -10,8 +10,13 @@ app.get("/hello", (req, res) => {
 	res.send("Hello and Welcome");
 })
 
-app.get("/game", (req, res) => {
-	res.send("Game Page");
+app.get("/game/:gameTitle", (req, res) => {
+	const title = req.params.gameTitle;
+	res.send("Enjoy " + title);
+})
+
+app.get("*", (req, res) => {
+	res.send("That page doesn't exist.");
 })
 
 app.listen(3000, () => {
