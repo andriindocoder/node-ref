@@ -9,7 +9,8 @@
 			  <div class="card-body">
 			    <h5 class="card-title"><%= gameslist[i].title %></h5>
 			    <p class="card-text">Developer: <%= gameslist[i].creator %></p>
-			    <a href="/game/<%= gameslist[i].id %>" class="btn btn-primary">Play Game</a>
+			    <a href="/game/<%= gameslist[i].id %>" class="btn btn-success">Play Game</a>
+			    <a href="/game/edit/<%= gameslist[i].id %>" class="btn btn-primary">Edit Game</a>
 			  </div>
 			</div>
 		</div>

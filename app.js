@@ -57,6 +57,43 @@ app.get("/game/:id", (req,res) => {
 	})
 })
 
+app.get("/game/edit/:id", (req, res) => {
+	var id = req.params.id;
+
+	Game.findById(id, (error, foundGame) => {
+		if(error) {
+			console.log(error);
+		}else{
+			res.render("editgame", {
+				title: foundGame.title,
+				creator: foundGame.creator,
+				width: foundGame.width,
+				height: foundGame.height,
+				id: id
+			});
+		}
+	})
+})
+
+app.post("/update/:id", (req, res) => {
+	var id = req.params.id;
+
+	Game.findByIdAndUpdate(id, {
+		title: req.body.title,
+		creator: req.body.creator,
+		height: req.body.height,
+		width: req.body.width
+	}, (error, updatedGame) => {
+		if(error){
+			console.log(error);
+		}else{
+			res.redirect("/list");
+			console.log("Data updated.");
+			console.log(updatedGame);
+		}
+	})
+})
+
 app.get("/list", (req, res) => {
 	Game.find({}, (error, data) => {
 		if(error) {
