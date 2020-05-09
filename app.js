@@ -94,6 +94,18 @@ app.post("/update/:id", (req, res) => {
 	})
 })
 
+app.get("/game/delete/:id", (req, res) => {
+	var id = req.params.id;
+
+	Game.findByIdAndDelete(id, (error) => {
+		if(error){
+			console.log(error);
+		}else{
+			res.redirect("/list");
+		}
+	})
+})
+
 app.get("/list", (req, res) => {
 	Game.find({}, (error, data) => {
 		if(error) {
