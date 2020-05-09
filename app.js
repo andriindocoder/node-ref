@@ -1,9 +1,54 @@
 const express = require('express');
+const app = express();
 const rp = require('request-promise');
 const request = require('request');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
-const app = express();
+mongoose.connect('mongodb+srv://root:root@cluster0-ahf6g.mongodb.net/test?retryWrites=true&w=majority', {
+	useUnifiedTechnology: true
+}, (error) => {
+	if(error){
+		console.log(error);
+	}else{
+		console.log("Database Connected");
+	}
+});
+
+var gameSchema = new mongoose.Schema({
+	title: String,
+	creator: String,
+	width: Number,
+	height: Number,
+	fileName: String,
+	thumbnailFile: String
+});
+
+var Game = mongoose.model("Game", gameSchema);
+
+Game.create({
+	title: "Learn to Fly 2", 
+	creator: "light_bringer77",
+	width: 640,
+	height: 480,
+	fileName: "learntofly2.swf",
+	thumbnailFile: "Learn_To_Fly_2.jpg"
+}, (error, data) => {
+	if(error){
+		console.log(error, data);
+	}else{
+		console.log("Data added.");
+		console.log(data);
+	}
+});
+
+Game.find({}, (error, data) => {
+	if(error) {
+		console.log(error);
+	}else{
+		console.log(data);
+	}
+})
 
 const games = [
 	{
