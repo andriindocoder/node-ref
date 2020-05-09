@@ -4,6 +4,7 @@ const rp = require('request-promise');
 const request = require('request');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const fileUpload = require('express-fileupload');
 
 mongoose.connect('mongodb+srv://root:root@cluster0-ahf6g.mongodb.net/test?retryWrites=true&w=majority', {
 	useUnifiedTechnology: true
@@ -29,6 +30,8 @@ var Game = mongoose.model("Game", gameSchema);
 app.use(express.static("public"));
 
 app.use(bodyParser.urlencoded({extended: true}));
+
+app.use(fileUpload());
 
 app.set("view engine", "ejs");
 
@@ -73,14 +76,35 @@ app.get("/addgame", (req, res) => {
 
 app.post("/addgame", (req, res) => {
 	var data = req.body;
-	
+
+	var gameFile = req.files.gameFile;
+	var imageFile = req.files.imageFile;
+
+	gameFile.mv("public/games/" + gameFile.name, (error) => {
+		if(error){
+			console.log("Upload games failed");
+			console.log(error);
+		}else{
+			console.log("Game uploaded");
+		}
+	});
+
+	imageFile.mv("public/images/" + imageFile.name, (error) => {
+		if(error){
+			console.log("Upload image failed");
+			console.log(error);
+		}else{
+			console.log("Image uploaded");
+		}
+	});
+
 	Game.create({
 		title: data.title, 
 		creator: data.creator,
 		width: data.width,
 		height: data.height,
-		fileName: data.fileName,
-		thumbnailFile: data.thumbnailFile
+		fileName: gameFile.name,
+		thumbnailFile: imageFile.name
 	}, (error, data) => {
 		if(error){
 			console.log(error, data);
