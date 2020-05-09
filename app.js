@@ -26,57 +26,6 @@ var gameSchema = new mongoose.Schema({
 
 var Game = mongoose.model("Game", gameSchema);
 
-Game.create({
-	title: "Learn to Fly 2", 
-	creator: "light_bringer77",
-	width: 640,
-	height: 480,
-	fileName: "learntofly2.swf",
-	thumbnailFile: "Learn_To_Fly_2.jpg"
-}, (error, data) => {
-	if(error){
-		console.log(error, data);
-	}else{
-		console.log("Data added.");
-		console.log(data);
-	}
-});
-
-Game.find({}, (error, data) => {
-	if(error) {
-		console.log(error);
-	}else{
-		console.log(data);
-	}
-})
-
-const games = [
-	{
-		title: "Learn to Fly 2", 
-		creator: "light_bringer77",
-		width: 640,
-		height: 480,
-		fileName: "learntofly2.swf",
-		thumbnailFile: "Learn_To_Fly_2.jpg"
-	},
-	{
-		title: "Run 3", 
-		creator: "player_03",
-		width: 800,
-		height: 600,
-		fileName: "run3.swf",
-		thumbnailFile: "run3.jpg"
-	},
-	{
-		title: "Continuity", 
-		creator: "glimajr",
-		width: 640,
-		height: 480,
-		fileName: "continuity.swf",
-		thumbnailFile: "booty.png"
-	},
-];
-
 app.use(express.static("public"));
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -98,9 +47,16 @@ app.get("/game/:title/:creator/:width/:height/:fileName", (req,res) => {
 })
 
 app.get("/list", (req, res) => {
-	res.render("list", {
-		gameslist: games
-	});
+	Game.find({}, (error, data) => {
+		if(error) {
+			console.log(error);
+		}else{
+			console.log(data);
+			res.render("list", {
+				gameslist: data
+			});
+		}
+	})
 })
 
 app.get("/addgame", (req, res) => {
@@ -109,7 +65,23 @@ app.get("/addgame", (req, res) => {
 
 app.post("/addgame", (req, res) => {
 	var data = req.body;
-	games.push(data);
+	
+	Game.create({
+		title: data.title, 
+		creator: data.creator,
+		width: data.width,
+		height: data.height,
+		fileName: data.fileName,
+		thumbnailFile: data.thumbnailFile
+	}, (error, data) => {
+		if(error){
+			console.log(error, data);
+		}else{
+			console.log("Data added.");
+			console.log(data);
+		}
+	});
+
 	res.redirect("/list");
 })
 
