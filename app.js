@@ -36,14 +36,22 @@ app.get("/", (req, res) => {
 	res.render("homepage");
 })
 
-app.get("/game/:title/:creator/:width/:height/:fileName", (req,res) => {
-	res.render("game", {
-		title: req.params.title,
-		creator: req.params.creator,
-		width: req.params.width,
-		height: req.params.height,
-		fileName: req.params.fileName
-	});
+app.get("/game/:id", (req,res) => {
+	var id = req.params.id;
+
+	Game.findById(id, (error, foundGame) => {
+		if(error) {
+			console.log(error);
+		}else{
+			res.render("game", {
+				title: foundGame.title,
+				creator: foundGame.creator,
+				width: foundGame.width,
+				height: foundGame.height,
+				fileName: foundGame.fileName
+			});
+		}
+	})
 })
 
 app.get("/list", (req, res) => {
