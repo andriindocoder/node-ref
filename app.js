@@ -1,10 +1,40 @@
 const express = require('express');
 const rp = require('request-promise');
 const request = require('request');
+const bodyParser = require('body-parser');
 
 const app = express();
 
+const games = [
+	{
+		title: "Learn to Fly 2", 
+		creator: "light_bringer77",
+		width: 640,
+		height: 480,
+		fileName: "learntofly2.swf",
+		thumbnailFile: "Learn_To_Fly_2.jpg"
+	},
+	{
+		title: "Run 3", 
+		creator: "player_03",
+		width: 800,
+		height: 600,
+		fileName: "run3.swf",
+		thumbnailFile: "run3.jpg"
+	},
+	{
+		title: "Continuity", 
+		creator: "glimajr",
+		width: 640,
+		height: 480,
+		fileName: "continuity.swf",
+		thumbnailFile: "booty.png"
+	},
+];
+
 app.use(express.static("public"));
+
+app.use(bodyParser.urlencoded({extended: true}));
 
 app.set("view engine", "ejs");
 
@@ -23,16 +53,19 @@ app.get("/game/:title/:creator/:width/:height/:fileName", (req,res) => {
 })
 
 app.get("/list", (req, res) => {
-	const games = [
-		{title: "Fortnite", creator: "Epic Games"},
-		{title: "Dirty Bomb", creator: "Splash Damage"},
-		{title: "Battlefield V", creator: "EA Games"},
-		{title: "Zelda BOTW", creator: "Nintendo"}
-	];
-
 	res.render("list", {
 		gameslist: games
 	});
+})
+
+app.get("/addgame", (req, res) => {
+	res.render("addgame");
+})
+
+app.post("/addgame", (req, res) => {
+	var data = req.body;
+	games.push(data);
+	res.redirect("/list");
 })
 
 app.get("*", (req, res) => {
