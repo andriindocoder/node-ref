@@ -6,6 +6,10 @@ const cors = require('cors');
 const imageToBase64 = require('image-to-base64');
 const puppeteer = require('puppeteer');
 const request = require('request'); 
+const fs = require('fs');
+
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 
 app.use(express.static("public"));
 app.use(cors());
@@ -16,6 +20,34 @@ const port = 3001;
 
 app.get('/', (req, res) => {
 	res.render('index');
+})
+
+app.get('/json', (req, res) => {
+	res.render('form-json');
+})
+
+app.post("/json", (req, res) => {
+	var data = req.body.json;
+
+	let today = Math.round((new Date()).getTime() / 1000);
+
+	let result = JSON.parse(data);
+	let tanggal = result.map((tanggal) => {
+	  return tanggal.date;
+	});
+	let debit = result.map((debit) => {
+	  return debit.debit
+	});
+	let balance = result.map((balance) => {
+	  return balance.balance
+	});
+	
+	res.render('analyze', {
+		filename: today,
+		balanceData: balance,
+		spendingData: debit,
+		tanggal: tanggal
+	});
 })
 
 app.get('/analyze', (req, res) => {
@@ -73,27 +105,41 @@ async function screenshot(ssname) {
 
 app.get('/response/:filename', (req, res) => {
 	var filename = req.params.filename;
-	console.log(filename);
 	var path = __dirname + '/public/images/' + filename + '.png';
-	console.log(path);
-	imageToBase64(path) // you can also to use url
-	    .then(
-	        (response) => {
-	        	res.render('image', {
-	        		base64: JSON.stringify({
-	        			statusCode: 200,
-	        			// data: 'data:image/png;base64,' + response
-	        			data: 'http://localhost:3001/images/'+ filename + '.png'
-	        		})
-	        	})
-	            // console.log(response); //cGF0aC90by9maWxlLmpwZw==
-	        }
-	    )
-	    .catch(
-	        (error) => {
-	            console.log(error); //Exepection error....
-	        }
-	    )
+
+	var fileContents;
+	try {
+	  fileContents = fs.readFileSync(path);
+	  imageToBase64(path) // you can also to use url
+	      .then(
+	          (response) => {
+	          	res.render('image', {
+	          		base64: JSON.stringify({
+	          			statusCode: 200,
+	          			// data: 'data:image/png;base64,' + response
+	          			data: 'http://localhost:3001/images/'+ filename + '.png'
+	          		})
+	          	})
+	              // console.log(response); //cGF0aC90by9maWxlLmpwZw==
+	          }
+	      )
+	      .catch(
+	          (error) => {
+	              console.log(error); //Exepection error....
+	          }
+	      )
+	} catch (err) {
+		console.log(err);
+	  // Here you get the error when the file was not found,
+	  // but you also get any other error
+			res.render('image', {
+	  		base64: JSON.stringify({
+	  			statusCode: 404,
+	  			data: 'Chart not found'
+	  		})
+	  	})
+	}	
+	
 });
 
 app.get('/image', (req, res) => {
