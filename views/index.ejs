@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Highchart Test</title>
+	<style>
+		.hidden {
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	<script src="https://code.highcharts.com/highcharts.js"></script>
+	<script src="https://code.highcharts.com/modules/exporting.js"></script>
+	<script src="https://code.highcharts.com/modules/export-data.js"></script>
+	<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+	<figure>
+		<div id="container"></div>
+	</figure>
+
+	<script>
+		'use strict';
+
+		// Load the fonts
+		Highcharts.createElement('link', {
+		    href: 'https://fonts.googleapis.com/css?family=Signika:400,700',
+		    rel: 'stylesheet',
+		    type: 'text/css'
+		}, null, document.getElementsByTagName('head')[0]);
+		// Add the background image to the container
+		Highcharts.addEvent(Highcharts.Chart, 'afterGetContainer', function () {
+		    // eslint-disable-next-line no-invalid-this
+		    this.container.style.background =
+		        'url(https://www.highcharts.com/samples/graphics/sand.png)';
+		});
+		Highcharts.theme = {
+		    colors: ['#f45b5b', '#8085e9', '#8d4654', '#7798BF', '#aaeeee',
+		        '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee'],
+		    chart: {
+		        backgroundColor: null,
+		        style: {
+		            fontFamily: 'Signika, serif'
+		        }
+		    },
+		    title: {
+		        style: {
+		            color: 'black',
+		            fontSize: '16px',
+		            fontWeight: 'bold'
+		        }
+		    },
+		    subtitle: {
+		        style: {
+		            color: 'black'
+		        }
+		    },
+		    tooltip: {
+		        borderWidth: 0
+		    },
+		    labels: {
+		        style: {
+		            color: '#6e6e70'
+		        }
+		    },
+		    legend: {
+		        backgroundColor: '#E0E0E8',
+		        itemStyle: {
+		            fontWeight: 'bold',
+		            fontSize: '13px'
+		        }
+		    },
+		    xAxis: {
+		        labels: {
+		            style: {
+		                color: '#6e6e70'
+		            }
+		        }
+		    },
+		    yAxis: {
+		        labels: {
+		            style: {
+		                color: '#6e6e70'
+		            }
+		        }
+		    },
+		    plotOptions: {
+		        series: {
+		            shadow: true
+		        },
+		        candlestick: {
+		            lineColor: '#404048'
+		        },
+		        map: {
+		            shadow: false
+		        }
+		    },
+		    // Highstock specific
+		    navigator: {
+		        xAxis: {
+		            gridLineColor: '#D0D0D8'
+		        }
+		    },
+		    rangeSelector: {
+		        buttonTheme: {
+		            fill: 'white',
+		            stroke: '#C0C0C8',
+		            'stroke-width': 1,
+		            states: {
+		                select: {
+		                    fill: '#D0D0D8'
+		                }
+		            }
+		        }
+		    },
+		    scrollbar: {
+		        trackBorderColor: '#C0C0C8'
+		    }
+		};
+		// Apply the theme
+		Highcharts.setOptions(Highcharts.theme);
+	</script>
+	<script>
+		var filename = '<%=filename%>';
+		var xaxis = <%- JSON.stringify(tanggal) %>;
+		var balance = <%- JSON.stringify(balanceData) %>;
+		var spending = <%- JSON.stringify(spendingData) %>;
+
+		Highcharts.chart('container', {
+		    chart: {    
+		    	type: 'line',
+                events: {
+                    load: function () {
+                        var ch = this;
+                        setTimeout(function () {
+                            if (ch.options) {
+                                ch.exportChart();
+                            }
+                        }, 1);
+                    }
+                }
+            },
+		    title: {
+		        text: 'Monthly Spending vs Balance'
+		    },
+		    xAxis: {
+		        categories: xaxis
+		    },
+		    yAxis: {
+		        title: {
+		            text: 'Amount (RM)'
+		        }
+		    },
+		    plotOptions: {
+		        line: {
+		            dataLabels: {
+		                enabled: true
+		            },
+		            enableMouseTracking: false
+		        }
+		    },
+		    exporting: {
+                filename: filename
+                // url:'http://localhost:5555/frontend/images'
+            },
+		    series: [{
+		        name: 'Balance',
+		        data: balance
+		    }, {
+		        name: 'Spending',
+		        data: spending
+		    }]
+		});
+	</script>
+	<script>
+		setTimeout(function(){
+
+		    var modifiedClass = document.getElementById('Img1').className.replace(/\bhidden\b/, '');
+		    document.getElementById('Img1').className = modifiedClass;
+
+		}, 10000);
+	</script>
+	<script>
+		var c = document.createElement('canvas');
+		var img = document.querySelector('#Img1');
+		c.height = img.naturalHeight;
+		c.width = img.naturalWidth;
+		var ctx = c.getContext('2d');
+
+		ctx.drawImage(img, 0, 0, c.width, c.height);
+		var base64String = c.toDataURL();
+		var setring = base64String.replace("data:image/png;base64,", "");
+		console.log(setring);
+	</script>
+</body>
+</html>
