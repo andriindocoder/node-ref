@@ -13,8 +13,52 @@ MongoClient.connect(connectionURL, { useUnifiedTopology: true }, (error, client)
 
 	const db = client.db(databaseName)
 
-	db.collection('users').insertOne({
-		name: 'Andri',
-		age: 38
+	// db.collection('users').insertOne({
+	// 	name: 'Andri',
+	// 	age: 38
+	// }, (error, result) => {
+	// 	if(error){
+	// 		return console.log(error)
+	// 	}
+
+	// 	console.log(result.ops)
+	// })
+
+	// db.collection('users').insertMany([
+	// {
+	// 	name : 'Jen',
+	// 	age : 28
+	// },
+	// {
+	// 	name: 'Gunther',
+	// 	age: 27
+	// }
+	// ], (error, result) => {
+	// 	if(error) {
+	// 		return console.log(error)
+	// 	}
+
+	// 	console.log(result.ops)
+	// })
+
+	db.collection('tasks').insertMany([
+	{
+		description : 'Clean the house',
+		completed : true
+	},
+	{
+		description : 'Renew Inspection',
+		completed : false
+	},
+	{
+		description: 'Pot plants',
+		completed: false
+	}
+	], (error, result) => {
+		if(error) {
+			return console.log(error)
+		}
+
+		console.log(result.ops)
 	})
 })
