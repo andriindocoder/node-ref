@@ -160,8 +160,8 @@
 		        }
 		    },
 		    exporting: {
-                filename: filename
-                // url:'http://localhost:5555/frontend/images'
+                filename: filename,
+                url:'http://127.0.0.1:7801/'
             },
 		    series: [{
 		        name: 'Balance',
@@ -172,25 +172,9 @@
 		    }]
 		});
 	</script>
+
 	<script>
-		setTimeout(function(){
 
-		    var modifiedClass = document.getElementById('Img1').className.replace(/\bhidden\b/, '');
-		    document.getElementById('Img1').className = modifiedClass;
-
-		}, 10000);
-	</script>
-	<script>
-		var c = document.createElement('canvas');
-		var img = document.querySelector('#Img1');
-		c.height = img.naturalHeight;
-		c.width = img.naturalWidth;
-		var ctx = c.getContext('2d');
-
-		ctx.drawImage(img, 0, 0, c.width, c.height);
-		var base64String = c.toDataURL();
-		var setring = base64String.replace("data:image/png;base64,", "");
-		console.log(setring);
 	</script>
 </body>
 </html>
