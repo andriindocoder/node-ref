@@ -9,13 +9,6 @@ const { MongoClient, ObjectID } = require('mongodb')
 const connectionURL = 'mongodb://127.0.0.1:27017'
 const databaseName = 'task-manager'
 
-const id = new ObjectID()
-console.log(id)
-console.log(id.getTimestamp())
-console.log(id.id.length)
-console.log(id.toHexString().length)
-
-
 MongoClient.connect(connectionURL, { useUnifiedTopology: true }, (error, client) => {
 	if(error){
 		return console.log(error)
@@ -23,52 +16,32 @@ MongoClient.connect(connectionURL, { useUnifiedTopology: true }, (error, client)
 
 	const db = client.db(databaseName)
 
-	// db.collection('users').insertOne({
-	// 	name: 'Vikram',
-	// 	age: 26
-	// }, (error, result) => {
+	// db.collection('users').findOne({ _id: new ObjectID('5eb7b1d86fb2365bef23b570') }, (error, user) => {
 	// 	if(error){
 	// 		return console.log(error)
 	// 	}
 
-	// 	console.log(result.ops)
+	// 	console.log(user)
 	// })
 
-	// db.collection('users').insertMany([
-	// {
-	// 	name : 'Jen',
-	// 	age : 28
-	// },
-	// {
-	// 	name: 'Gunther',
-	// 	age: 27
-	// }
-	// ], (error, result) => {
-	// 	if(error) {
+	// db.collection('users').find({ age: 27 }).toArray((error, users) => {
+	// 	if(error){
 	// 		return console.log(error)
 	// 	}
-
-	// 	console.log(result.ops)
+	// 	console.log(users)
 	// })
 
-	// db.collection('tasks').insertMany([
-	// {
-	// 	description : 'Clean the house',
-	// 	completed : true
-	// },
-	// {
-	// 	description : 'Renew Inspection',
-	// 	completed : false
-	// },
-	// {
-	// 	description: 'Pot plants',
-	// 	completed: false
-	// }
-	// ], (error, result) => {
-	// 	if(error) {
+	// db.collection('users').find({ age: 27 }).count((error, count) => {
+	// 	if(error){
 	// 		return console.log(error)
 	// 	}
-
-	// 	console.log(result.ops)
+	// 	console.log(count)
 	// })
+
+	db.collection('tasks').find({ completed: false }).toArray((error, tasks) => {
+		if(error){
+			return console.log(error)
+		}
+		console.log(tasks)
+	})
 })
