@@ -4,7 +4,8 @@ const bodyParser = require('body-parser');
 const rp = require('request-promise');
 const cors = require('cors');
 const imageToBase64 = require('image-to-base64');
-const puppeteer = require('puppeteer'); 
+const puppeteer = require('puppeteer');
+const request = require('request'); 
 
 app.use(express.static("public"));
 app.use(cors());
@@ -14,7 +15,7 @@ app.set("view engine", "ejs");
 const port = 3001;
 
 app.get('/', (req, res) => {
-	res.send('<h3>Hello World</h3>');
+	res.render('index');
 })
 
 app.get('/analyze', (req, res) => {
@@ -34,7 +35,7 @@ app.get('/analyze', (req, res) => {
 			  return balance.balance
 			});
 			
-			res.render('index', {
+			res.render('analyze', {
 				filename: today,
 				balanceData: balance,
 				spendingData: debit,
@@ -69,6 +70,31 @@ async function screenshot(ssname) {
 	await element.screenshot({path: __dirname + '/public/images/' + ssname + '.png'}); // take screenshot element in puppeteer
 	await browser.close();
 }
+
+app.get('/response/:filename', (req, res) => {
+	var filename = req.params.filename;
+	console.log(filename);
+	var path = __dirname + '/public/images/' + filename + '.png';
+	console.log(path);
+	imageToBase64(path) // you can also to use url
+	    .then(
+	        (response) => {
+	        	res.render('image', {
+	        		base64: JSON.stringify({
+	        			statusCode: 200,
+	        			// data: 'data:image/png;base64,' + response
+	        			data: 'http://localhost:3001/images/'+ filename + '.png'
+	        		})
+	        	})
+	            // console.log(response); //cGF0aC90by9maWxlLmpwZw==
+	        }
+	    )
+	    .catch(
+	        (error) => {
+	            console.log(error); //Exepection error....
+	        }
+	    )
+});
 
 app.get('/image', (req, res) => {
 	var path = __dirname + '/public/images/highchart.png';
