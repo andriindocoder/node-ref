@@ -13,10 +13,26 @@ const puppeteer = require('puppeteer');
 		return Array.from(repos).map((repo) => { return repo.href })
 	})
 
+
+	function waitforbalance() {
+		return document.getElementById('current-balance').innerHTML != '';
+	}
+
+	function waitforinterest() {
+		return document.getElementById('unpaid-interest').innerHTML != '';
+	}
 	
-	console.log(tmp)
+	var currentBalance = await page.evaluate(() => {
+		return document.getElementById('current-balance').innerHTML;
+	})
+
+	var unpaidInterest = await page.evaluate(() => {
+		return document.getElementById('unpaid-interest').innerHTML;
+	})
 
 	await browser.close()
+
+
 })()
 
 /*
