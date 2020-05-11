@@ -3,7 +3,10 @@ const puppeteer = require('puppeteer');           // include lib
   const browser = await puppeteer.launch();       // run browser
   const page = await browser.newPage();           // open new tab
   await page.goto('https://google.com');          // go to site
-  await page.screenshot({path: 'google.png', fullPage: true});    // take screenshot in puppeteer and saving the image to google.png
-  await browser.close();                          // close browser
 
+  // Далее #hplogo - требуемый нам селектор
+  await page.waitForSelector('#hplogo');          // wait for the selector to load
+  const element = await page.$('#hplogo');        // declare a variable with an ElementHandle
+  await element.screenshot({path: 'google.png'}); // take screenshot element in puppeteer
+  await browser.close();                          // close browser
 })();
