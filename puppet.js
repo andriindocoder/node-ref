@@ -16,7 +16,7 @@ cloudinary.config({
   api_secret: 'QUKtW45zMmAkwdcqs-7xguenxLo'
 });
 
-app.post("/json-puppet", (req, res) => {
+app.post("/json-puppeteer", (req, res) => {
   var data = req.body;
 
   let filename = Math.round((new Date()).getTime() / 1000);
@@ -33,8 +33,8 @@ app.post("/json-puppet", (req, res) => {
   });
 
   createPdf(filename, tanggal, debit, balance)
-  //   .then((screenshot) => uploadScreenshot(screenshot))
-  //   .then((result) => res.status(200).json(result));
+    .then((screenshot) => uploadScreenshot(screenshot))
+    .then((result) => res.status(200).json(result));
 
   // res.send('analyze', {
   //   filename: today,
@@ -65,6 +65,7 @@ async function createPdf(filename, tanggal, debit, balance) {
   const xaxis = JSON.stringify(tanggal);
   const spending = JSON.stringify(debit);
   const balances = JSON.stringify(balance);
+  const fname = 'hc'+ filename +'.png';
   const html = `
     <!DOCTYPE html>
   <html lang="en">
@@ -247,12 +248,12 @@ async function createPdf(filename, tanggal, debit, balance) {
 
   const page = await browser.newPage();
 
-  await page.setContent(html, {waitUntil: 'networkidle2', timeout: 0});
+  await page.setContent(html, {waitUntil: 'networkidle0', timeout: 0});
 
   const screenshot = await page.screenshot({
     encoding: 'binary',
     omitBackground: true,
-    path: 'highcharts.png'
+    path: __dirname + '/public/images/' + fname
   });
 
   await browser.close();
@@ -282,26 +283,26 @@ async function takeScreenshot(embedUrl) {
   return screenshot;
 }
 
-// function uploadScreenshot(screenshot) {
-//   return new Promise((resolve, reject) => {
-//     const uploadOptions = {};
-//     cloudinary.uploader.upload_stream(uploadOptions, (error, result) => {
-//       if (error) reject(error)
-//       else resolve(result);
-//     }).end(screenshot);
-//   });
-// }
-
 function uploadScreenshot(screenshot) {
   return new Promise((resolve, reject) => {
-    resolve(
-      {
-        statusCode: 200,
-        url: 'http://localhost:3001/testing'
-      }
-    )
+    const uploadOptions = {};
+    cloudinary.uploader.upload_stream(uploadOptions, (error, result) => {
+      if (error) reject(error)
+      else resolve(result);
+    }).end(screenshot);
   });
 }
+
+// function uploadScreenshot(screenshot) {
+//   return new Promise((resolve, reject) => {
+//     resolve(
+//       {
+//         statusCode: 200,
+//         url: 'http://localhost:3001/testing'
+//       }
+//     )
+//   });
+// }
 
 app.listen(3000, () => {
   console.log('App is running on port 3000')
