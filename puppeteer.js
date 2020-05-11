@@ -22,4 +22,8 @@ const puppeteer = require('puppeteer');
 /*
 	page.waitForSelector : waits for the selector to appear in page
 	page.evaluate: accepts a func parameter to be evaluated in the page context
+	page.focus: accepets a selector and focuses on it
+	page.keyboard.type: simulate keypresses and input text
+	page.click: accepts selector and clicks on it
+	page.waitFor: accepts functions which can prolong wait, if return true, program resumes
 */
