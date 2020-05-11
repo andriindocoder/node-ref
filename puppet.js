@@ -16,33 +16,37 @@ cloudinary.config({
   api_secret: 'QUKtW45zMmAkwdcqs-7xguenxLo'
 });
 
-// app.post("/json-puppet", (req, res) => {
-//   var data = req.body;
+app.post("/json-puppet", (req, res) => {
+  var data = req.body;
 
-//   let today = Math.round((new Date()).getTime() / 1000);
+  let filename = Math.round((new Date()).getTime() / 1000);
 
-//   let result = data;
-//   let tanggal = result.map((tanggal) => {
-//     return tanggal.date;
-//   });
-//   let debit = result.map((debit) => {
-//     return debit.debit
-//   });
-//   let balance = result.map((balance) => {
-//     return balance.balance
-//   });
-  
-//   res.send('analyze', {
-//     filename: today,
-//     balanceData: balance,
-//     spendingData: debit,
-//     tanggal: tanggal
-//   });
+  let result = data;
+  let tanggal = result.map((tanggal) => {
+    return tanggal.date;
+  });
+  let debit = result.map((debit) => {
+    return debit.debit
+  });
+  let balance = result.map((balance) => {
+    return balance.balance
+  });
 
-//   takeScreenshot('https://google.com/')
-//     .then((screenshot) => uploadScreenshot(screenshot))
-//     .then((result) => res.status(200).json(result));
-// })
+  createPdf(filename, tanggal, debit, balance)
+  //   .then((screenshot) => uploadScreenshot(screenshot))
+  //   .then((result) => res.status(200).json(result));
+
+  // res.send('analyze', {
+  //   filename: today,
+  //   balanceData: balance,
+  //   spendingData: debit,
+  //   tanggal: tanggal
+  // });
+
+  // takeScreenshot('https://google.com/')
+  //   .then((screenshot) => uploadScreenshot(screenshot))
+  //   .then((result) => res.status(200).json(result));
+})
 
 // Create an express route
 app.post("/upload", (req, res) => {
@@ -57,13 +61,12 @@ app.post("/pdf", (req, res) => {
     .then((result) => res.status(200).json(result));
 });
 
-async function createPdf() {
-  const judul = 'Screenshot Test';
-  const spending = '[3000,3000,3000,500,100,250,50,500,350,200,50,50,500,100,8.5,350,1202,50,70,100,1000,1000,500,501,790,128,200,400,100,100]';
-  const balance = '[50.24,50.24,50.24,20.24,20.24,20.24,70.24,70.24,220.24,20.24,10.24,10.24,10.24,10.24,1.74,1551.74,349.74,299.74,229.74,129.74,129.74,129.74,129.74,128.74,138.74,10.74,10.74,210.74,110.74,10.74]';
+async function createPdf(filename, tanggal, debit, balance) {
+  const xaxis = JSON.stringify(tanggal);
+  const spending = JSON.stringify(debit);
+  const balances = JSON.stringify(balance);
   const html = `
-  
-  <!DOCTYPE html>
+    <!DOCTYPE html>
   <html lang="en">
   <head>
     <meta charset="UTF-8">
@@ -75,7 +78,6 @@ async function createPdf() {
     </style>
   </head>
   <body>
-    <h3>${judul}</h3>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
@@ -187,8 +189,8 @@ async function createPdf() {
       Highcharts.setOptions(Highcharts.theme);
     </script>
     <script>
-      var xaxis = ["2020-01-01","2020-01-04","2020-01-06","2020-01-11","2020-01-14","2020-01-15","2020-01-15","2020-01-16","2020-01-20","2020-01-20","2020-01-23","2020-01-24","2020-01-25","2020-01-27","2020-01-27","2020-01-28","2020-01-28","2020-01-28","2020-01-29","2020-01-29","2020-01-30","2020-01-30","2020-01-30","2020-02-02","2020-02-05","2020-02-05","2020-02-06","2020-02-10","2020-02-10","2020-02-12"];
-      var balance = ${balance};
+      var xaxis = ${xaxis};
+      var balance = ${balances};
       var spending = ${spending};
 
       Highcharts.chart('container', {
@@ -239,10 +241,9 @@ async function createPdf() {
     </script>
   </body>
   </html>
+  
   `;
-  const browser = await puppeteer.launch({
-
-  });
+  const browser = await puppeteer.launch({});
 
   const page = await browser.newPage();
 
@@ -250,7 +251,8 @@ async function createPdf() {
 
   const screenshot = await page.screenshot({
     encoding: 'binary',
-    omitBackground: true
+    omitBackground: true,
+    path: 'highcharts.png'
   });
 
   await browser.close();
@@ -280,9 +282,24 @@ async function takeScreenshot(embedUrl) {
   return screenshot;
 }
 
+// function uploadScreenshot(screenshot) {
+//   return new Promise((resolve, reject) => {
+//     const uploadOptions = {};
+//     cloudinary.uploader.upload_stream(uploadOptions, (error, result) => {
+//       if (error) reject(error)
+//       else resolve(result);
+//     }).end(screenshot);
+//   });
+// }
+
 function uploadScreenshot(screenshot) {
   return new Promise((resolve, reject) => {
-    resolve('Kamu Hebat')
+    resolve(
+      {
+        statusCode: 200,
+        url: 'http://localhost:3001/testing'
+      }
+    )
   });
 }
 
