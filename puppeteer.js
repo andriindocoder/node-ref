@@ -4,12 +4,10 @@ const puppeteer = require('puppeteer');
 	const browser = await puppeteer.launch({headless: true})
 	const page = await browser.newPage()
 	await page.setViewport({ width: 1280, height: 800 })
-	await page.goto('https://carmalou.com')
+	await page.goto('http://localhost:5555/login', {waitUntil: 'networkidle2'})
 
-	await page.screenshot({
-		path: 'fileshot.png',
-		fullPage: true
-	})
+	var html = await page.content()
+	console.log(html)
 
 	await browser.close()
 })()
