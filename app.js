@@ -2,6 +2,7 @@
 const express = require("express");
 const app = express();
 const bodyParser = require('body-parser');
+const fs = require('fs');
 
 app.use(bodyParser.json());
 
@@ -44,7 +45,7 @@ app.post("/convert-to-image", (req, res) => {
   convertToImage(filename, tanggal, debit, balance)
     .then((screenshot) => uploadScreenshot(screenshot))
     .then((result) => res.status(200).json(result))
-    .catch((error) => res.status(503).json(error));
+    .catch((error) => res.status(error.statusCode).json(error));
 })
 
 async function convertToImage(filename, tanggal, debit, balance) {
@@ -231,18 +232,30 @@ async function convertToImage(filename, tanggal, debit, balance) {
   
   `;
   const browser = await puppeteer.launch({
+    // headless: false,
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
 
   const page = await browser.newPage();
 
-  await page.setViewport({
-     width: 1920,
-     height: 1080,
-   });
+  // await page.setViewport({
+  //    width: 667,
+  //    height: 375,
+  //  });
 
   await page.setContent(html, {waitUntil: 'networkidle0', timeout: 0});
-  await page.waitForSelector('#container');
+  try {
+    await page.waitForSelector('#container');
+  } catch (e) {
+    if (e instanceof puppeteer.errors.TimeoutError) {
+      const error = {
+        statusCode: 408,
+        message: 'Request Timeout'
+      };
+
+      return error;
+    }
+  }
 
   const screenshot = await page.screenshot({
     encoding: 'binary',
@@ -252,12 +265,28 @@ async function convertToImage(filename, tanggal, debit, balance) {
 
   await browser.close();
 
-  const result = {
-    skrinsut: screenshot, 
-    path: url_prod + 'images/' + fname
-  };
+  const thepath = __dirname + '/publica/images/' + fname
 
-  return result;
+  try {
+    if (fs.existsSync(thepath)) {
+      const result = {
+        statusCode: 200,
+        path: url_prod + 'images/' + fname
+      };
+      console.log('Success');
+      return result;
+    }else{
+      const result = {
+        statusCode: 500,
+        message: 'Chart failed to generate'
+      };
+
+      return result;
+    }
+  } catch(err) {
+    console.error(err)
+  }
+
   // return screenshot;
 }
 
@@ -273,13 +302,19 @@ async function convertToImage(filename, tanggal, debit, balance) {
 
 function uploadScreenshot(screenshot) {
   return new Promise((resolve, reject) => {
-    resolve(
-      {
-        statusCode: 200,
-        url: screenshot.path
-      }
-    )
-    reject('Something is wrong')
+    if(screenshot.statusCode == 200){
+      resolve(
+        {
+          statusCode: screenshot.statusCode,
+          url: screenshot.path
+        }
+      )
+    }else{
+      reject({
+        statusCode: screenshot.statusCode,
+        message: screenshot.message
+      })
+    }
   });
 }
 
