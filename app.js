@@ -9,7 +9,7 @@ app.use(express.static("public"));
 
 const port = process.env.PORT || 3000;
 
-const production  = 'https://examplePage.com';
+const production  = 'https://morning-lowlands-04407.herokuapp.com/';
 const development = 'http://localhost:3000/';
 const url_prod = (process.env.NODE_ENV ? production : development);
 
@@ -20,6 +20,10 @@ cloudinary.config({
   api_key: '197919379158982', 
   api_secret: 'QUKtW45zMmAkwdcqs-7xguenxLo'
 });
+
+app.get("/", (req, res) => {
+  res.send('<h3>Welcome V1.0.0</h3>');
+})
 
 app.post("/convert-to-image", (req, res) => {
   var data = req.body;
@@ -39,7 +43,8 @@ app.post("/convert-to-image", (req, res) => {
 
   convertToImage(filename, tanggal, debit, balance)
     .then((screenshot) => uploadScreenshot(screenshot))
-    .then((result) => res.status(200).json(result));
+    .then((result) => res.status(200).json(result))
+    .catch((error) => res.status(503).json(error));
 })
 
 async function convertToImage(filename, tanggal, debit, balance) {
@@ -225,11 +230,19 @@ async function convertToImage(filename, tanggal, debit, balance) {
   </html>
   
   `;
-  const browser = await puppeteer.launch({});
+  const browser = await puppeteer.launch({
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  });
 
   const page = await browser.newPage();
 
+  await page.setViewport({
+     width: 1920,
+     height: 1080,
+   });
+
   await page.setContent(html, {waitUntil: 'networkidle0', timeout: 0});
+  await page.waitForSelector('#container');
 
   const screenshot = await page.screenshot({
     encoding: 'binary',
@@ -241,10 +254,11 @@ async function convertToImage(filename, tanggal, debit, balance) {
 
   const result = {
     skrinsut: screenshot, 
-    path: url_prod + '/images/' + fname
+    path: url_prod + 'images/' + fname
   };
 
   return result;
+  // return screenshot;
 }
 
 // function uploadScreenshot(screenshot) {
@@ -265,6 +279,7 @@ function uploadScreenshot(screenshot) {
         url: screenshot.path
       }
     )
+    reject('Something is wrong')
   });
 }
 
