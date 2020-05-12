@@ -258,12 +258,12 @@ async function createPdf(filename, tanggal, debit, balance) {
 
   await browser.close();
 
-  const result = {
-    skrinsut: screenshot, 
-    path: 'http://localhost:3001/images/' + fname
-  };
+  // const result = {
+  //   skrinsut: screenshot, 
+  //   path: 'http://localhost:3001/images/' + fname
+  // };
 
-  return result;
+  return screenshot;
 }
 
 // See https://bitsofco.de/using-a-headless-browser-to-capture-page-screenshots
@@ -288,26 +288,26 @@ async function takeScreenshot(embedUrl) {
   return screenshot;
 }
 
-// function uploadScreenshot(screenshot) {
-//   return new Promise((resolve, reject) => {
-//     const uploadOptions = {};
-//     cloudinary.uploader.upload_stream(uploadOptions, (error, result) => {
-//       if (error) reject(error)
-//       else resolve(result);
-//     }).end(screenshot);
-//   });
-// }
-
 function uploadScreenshot(screenshot) {
   return new Promise((resolve, reject) => {
-    resolve(
-      {
-        statusCode: 200,
-        url: screenshot.path
-      }
-    )
+    const uploadOptions = {};
+    cloudinary.uploader.upload_stream(uploadOptions, (error, result) => {
+      if (error) reject(error)
+      else resolve(result);
+    }).end(screenshot);
   });
 }
+
+// function uploadScreenshot(screenshot) {
+//   return new Promise((resolve, reject) => {
+//     resolve(
+//       {
+//         statusCode: 200,
+//         url: screenshot.path
+//       }
+//     )
+//   });
+// }
 
 app.listen(3000, () => {
   console.log('App is running on port 3000')
