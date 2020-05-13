@@ -196,7 +196,7 @@ async function convertToImage(filename, tanggal, debit, balance) {
                   // }
               },
           title: {
-              text: 'Monthly Spending vs Balance'
+              text: 'Spending vs Balance Pattern'
           },
           xAxis: {
               categories: xaxis
