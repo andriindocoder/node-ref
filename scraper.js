@@ -5,9 +5,11 @@ const puppeteer = require('puppeteer');
   const page = await browser.newPage();
   await page.goto('https://marketingplatform.google.com/about/partners/find-a-partner');
   // await page.screenshot({path: 'example.png'});
+  await page.waitForSelector('div.retail-partner-card h3.title');
 
   const titles = await page.evaluate(() => 
-  	document.querySelector("h2").textContent);
+  	Array.from(document.querySelectorAll('div.retail-partner-card h3.title'))
+      .map(partner => partner.innerText.trim()))
 
   console.log(titles);
 
