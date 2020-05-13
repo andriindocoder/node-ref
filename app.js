@@ -63,6 +63,7 @@ async function convertToImage(filename, tanggal, debit, balance) {
       .hidden {
         display: none;
       }
+      * { margin:0; padding:0; box-sizing:border-box; }
     </style>
   </head>
   <body>
@@ -138,7 +139,8 @@ async function convertToImage(filename, tanggal, debit, balance) {
                   style: {
                       color: '#6e6e70'
                   }
-              }
+              },
+              gridLineWidth: 0
           },
           plotOptions: {
               series: {
@@ -214,6 +216,9 @@ async function convertToImage(filename, tanggal, debit, balance) {
                   enableMouseTracking: false
               }
           },
+          exporting: {
+              enabled: false
+          },
           series: [{
               name: 'Balance',
               data: balance
@@ -238,10 +243,10 @@ async function convertToImage(filename, tanggal, debit, balance) {
 
   const page = await browser.newPage();
 
-  // await page.setViewport({
-  //    width: 667,
-  //    height: 375,
-  //  });
+  await page.setViewport({
+     width: 667,
+     height: 400,
+   });
 
   await page.setContent(html, {waitUntil: 'networkidle0', timeout: 0});
   try {
