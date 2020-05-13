@@ -11,7 +11,12 @@ const puppeteer = require('puppeteer');
   	Array.from(document.querySelectorAll('div.retail-partner-card h3.title'))
       .map(partner => partner.innerText.trim()))
 
+  const logos = await page.evaluate(() => 
+    Array.from(document.querySelectorAll('div.retail-partner-card .logo img'))
+      .map(logo => logo.src))
+
   console.log(titles);
+  console.log(logos);
 
   await browser.close();
 })();
