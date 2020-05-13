@@ -15,8 +15,16 @@ const puppeteer = require('puppeteer');
     Array.from(document.querySelectorAll('div.retail-partner-card .logo img'))
       .map(logo => logo.src))
 
+  const partners = await page.evaluate(() => 
+    Array.from(document.querySelectorAll('div.retail-partner-card'))
+      .map(compact => ({
+        title: compact.querySelector('h3.title').textContent.trim(),
+        logo: compact.querySelector('.logo img').src
+      })))
+
   console.log(titles);
   console.log(logos);
+  console.log(partners);
 
   await browser.close();
 })();
