@@ -76,6 +76,7 @@ async function createPdf(filename, tanggal, debit, balance) {
       .hidden {
         display: none;
       }
+      * { margin:0; padding:0; box-sizing:border-box; }
     </style>
   </head>
   <body>
@@ -151,7 +152,8 @@ async function createPdf(filename, tanggal, debit, balance) {
                   style: {
                       color: '#6e6e70'
                   }
-              }
+              },
+              gridLineWidth: 0
           },
           plotOptions: {
               series: {
@@ -209,7 +211,7 @@ async function createPdf(filename, tanggal, debit, balance) {
                   // }
               },
           title: {
-              text: 'Monthly Spending vs Balance'
+              text: 'Spending vs Balance Pattern'
           },
           xAxis: {
               categories: xaxis
@@ -227,6 +229,9 @@ async function createPdf(filename, tanggal, debit, balance) {
                   enableMouseTracking: false
               }
           },
+          exporting: {
+                  enabled: false
+              },
           series: [{
               name: 'Balance',
               data: balance
@@ -248,6 +253,11 @@ async function createPdf(filename, tanggal, debit, balance) {
 
   const page = await browser.newPage();
 
+  await page.setViewport({
+       width: 640,
+       height: 400,
+     });
+
   await page.setContent(html, {waitUntil: 'networkidle0', timeout: 0});
 
   const screenshot = await page.screenshot({
@@ -258,12 +268,13 @@ async function createPdf(filename, tanggal, debit, balance) {
 
   await browser.close();
 
-  // const result = {
-  //   skrinsut: screenshot, 
-  //   path: 'http://localhost:3001/images/' + fname
-  // };
+  const result = {
+    skrinsut: screenshot, 
+    path: 'http://localhost:3001/images/' + fname
+  };
+  return result;
 
-  return screenshot;
+  // return screenshot;
 }
 
 // See https://bitsofco.de/using-a-headless-browser-to-capture-page-screenshots
@@ -288,26 +299,26 @@ async function takeScreenshot(embedUrl) {
   return screenshot;
 }
 
-function uploadScreenshot(screenshot) {
-  return new Promise((resolve, reject) => {
-    const uploadOptions = {};
-    cloudinary.uploader.upload_stream(uploadOptions, (error, result) => {
-      if (error) reject(error)
-      else resolve(result);
-    }).end(screenshot);
-  });
-}
-
 // function uploadScreenshot(screenshot) {
 //   return new Promise((resolve, reject) => {
-//     resolve(
-//       {
-//         statusCode: 200,
-//         url: screenshot.path
-//       }
-//     )
+//     const uploadOptions = {};
+//     cloudinary.uploader.upload_stream(uploadOptions, (error, result) => {
+//       if (error) reject(error)
+//       else resolve(result);
+//     }).end(screenshot);
 //   });
 // }
+
+function uploadScreenshot(screenshot) {
+  return new Promise((resolve, reject) => {
+    resolve(
+      {
+        statusCode: 200,
+        url: screenshot.path
+      }
+    )
+  });
+}
 
 app.listen(3000, () => {
   console.log('App is running on port 3000')
