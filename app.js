@@ -265,7 +265,7 @@ async function convertToImage(filename, tanggal, debit, balance) {
 
   await browser.close();
 
-  const thepath = __dirname + '/publica/images/' + fname
+  const thepath = __dirname + '/public/images/' + fname
 
   try {
     if (fs.existsSync(thepath)) {
