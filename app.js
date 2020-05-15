@@ -7,9 +7,22 @@ const app = express()
 //DB Config
 const db = require('./config/keys').MongoURI
 
-// mongoose.connect(db, { useNewUrlParser: true})
-// 	.then(() => console.log("DB Connected"))
-// 	.catch(e => console.log(e))
+// mongoose.connect(db, { useUnifiedTechnology: true}, (error) => {
+// 	if(error){
+// 		console.log(error);
+// 	}else{
+// 		console.log("Database Connected");
+// 	}
+// })
+
+const MongoClient = require('mongodb').MongoClient;
+const uri = db;
+const client = new MongoClient(uri, { useUnifiedTopology: true });
+client.connect(err => {
+  const collection = client.db("test").collection("devices");
+  // perform actions on the collection object
+  client.close();
+});
 
 //EJS
 app.use(expressLayouts)
