@@ -15,15 +15,31 @@ const development = 'http://localhost:3000/';
 const url_prod = (process.env.NODE_ENV ? production : development);
 
 const puppeteer = require('puppeteer');
-const cloudinary = require('cloudinary').v2;
-cloudinary.config({
-  cloud_name: 'daairnmgx', 
-  api_key: '197919379158982', 
-  api_secret: 'QUKtW45zMmAkwdcqs-7xguenxLo'
-});
 
 app.get("/", (req, res) => {
   res.send('<h3>Welcome V1.0.0</h3>');
+})
+
+app.get("/delete-image/:name", (req, res) => {
+  const filename = req.params.name;
+
+  const imagePath = __dirname + '/public/images/' + filename;
+
+  try {
+    if (fs.existsSync(imagePath)) {
+        //file exists
+        fs.unlinkSync(imagePath)
+        result = {
+          statusCode: 202,
+          message: 'Image Deleted Successfully'
+        }
+        res.status(202).send(result)
+      } else {
+        res.status(404).send({statusCode: 404, message: "Image not found."})
+      }
+  } catch(err) {
+    res.status(404).send({statusCode: 404, message: err})
+  }
 })
 
 app.post("/convert-to-image", (req, res) => {
