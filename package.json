@@ -1,0 +1,26 @@
+{
+  "name": "stefan",
+  "version": "1.0.0",
+  "description": "Scrap HTML Tables with Cheerio and Request",
+  "main": "app.js",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "express": "^4.17.1",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andriindocoder/node-ref.git"
+  },
+  "author": "Andri",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andriindocoder/node-ref/issues"
+  },
+  "homepage": "https://github.com/andriindocoder/node-ref#readme"
+}
