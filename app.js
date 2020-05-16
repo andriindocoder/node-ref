@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const mongoose = require("mongoose");
-// const Listing = require("./model/Listing");
+const Listing = require("./model/Listing");
 //craigslistuser:SuperStrongPassword1
 const scrapingResults = [
   {
@@ -28,16 +28,16 @@ async function connectToMongoDb() {
   });
 }
 
-const listingSchema = new mongoose.Schema({
-  title: String,
-  datePosted: Date,
-  neighborhood: String,
-  url: String,
-  jobDescription: String,
-  compensation: String
-});
+// const listingSchema = new mongoose.Schema({
+//   title: String,
+//   datePosted: Date,
+//   neighborhood: String,
+//   url: String,
+//   jobDescription: String,
+//   compensation: String
+// });
 
-const Listing = mongoose.model("Listing", listingSchema);
+// const Listing = mongoose.model("Listing", listingSchema);
 
 async function scrapeListings(page) {
   await page.goto(
