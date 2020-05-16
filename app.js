@@ -15,14 +15,15 @@ const db = require('./config/keys').MongoURI
 // 	}
 // })
 
-const MongoClient = require('mongodb').MongoClient;
-const uri = db;
-const client = new MongoClient(uri, { useUnifiedTopology: true });
-client.connect(err => {
-  const collection = client.db("test").collection("devices");
-  // perform actions on the collection object
-  client.close();
-});
+mongoose.connect(db, {
+    useUnifiedTopology: true, useNewUrlParser: true
+  }, (error) => {
+    if(error){
+      console.log(error);
+    }else{
+      console.log("Database Connected");
+    }
+  })
 
 //EJS
 app.use(expressLayouts)
