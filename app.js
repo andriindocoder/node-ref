@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const mongoose = require("mongoose");
-const Listing = require("./model/Listing");
+// const Listing = require("./model/Listing");
 //craigslistuser:SuperStrongPassword1
 const scrapingResults = [
   {
@@ -17,22 +17,27 @@ const scrapingResults = [
 ];
 
 async function connectToMongoDb() {
-  const MongoClient = require('mongodb').MongoClient;
-  const client = new MongoClient("mongodb+srv://root:root@cluster0-ahf6g.mongodb.net/test?retryWrites=true&w=majority", { useUnifiedTopology: true });
-  client.connect(err => {
-    const collection = client.db("test").collection("listings");
-    // perform actions on the collection object
-    client.close();
+  mongoose.connect('mongodb+srv://root:root@cluster0-ahf6g.mongodb.net/test?retryWrites=true&w=majority', {
+    useUnifiedTopology: true, useNewUrlParser: true
+  }, (error) => {
+    if(error){
+      console.log(error);
+    }else{
+      console.log("Database Connected");
+    }
   });
 }
 
-const MongoClient = require('mongodb').MongoClient;
-const client = new MongoClient("mongodb+srv://root:root@cluster0-ahf6g.mongodb.net/test?retryWrites=true&w=majority", { useUnifiedTopology: true });
-client.connect(err => {
-  const collection = client.db("test").collection("listings");
-  // perform actions on the collection object
-  client.close();
+const listingSchema = new mongoose.Schema({
+  title: String,
+  datePosted: Date,
+  neighborhood: String,
+  url: String,
+  jobDescription: String,
+  compensation: String
 });
+
+const Listing = mongoose.model("Listing", listingSchema);
 
 async function scrapeListings(page) {
   await page.goto(
@@ -68,10 +73,24 @@ async function scrapeJobDescriptions(listings, page) {
     const compensation = $("p.attrgroup > span:nth-child(1) > b").text();
     listings[i].jobDescription = jobDescription;
     listings[i].compensation = compensation;
-    console.log(listings[i].jobDescription);
-    console.log(listings[i].compensation);
+    console.log(listings[i]);
+    // console.log(listings[i].compensation);
     const listingModel = new Listing(listings[i]);
-    // await listingModel.save();
+    Listing.create({
+      title: listings[i].title,
+      datePosted: listings[i].datePosted,
+      neighborhood: listings[i].neighborhood,
+      url: listings[i].url,
+      jobDescription: listings[i].jobDescription,
+      compensation: listings[i].compensation
+    }, (error, data) => {
+      if(error){
+        console.log(error, data);
+      }else{
+        console.log("Data added.");
+        console.log(data);
+      }
+    });
     await sleep(1000); //1 second sleep
   }
 }
@@ -81,7 +100,7 @@ async function sleep(miliseconds) {
 }
 
 async function main() {
-  // await connectToMongoDb();
+  await connectToMongoDb();
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
   const listings = await scrapeListings(page);
@@ -89,7 +108,7 @@ async function main() {
     listings,
     page
   );
-  console.log(listings);
+  // console.log(listings);
 }
 
 main();
