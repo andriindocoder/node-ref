@@ -17,30 +17,33 @@ router.post('/tasks', auth, async (req, res) => {
 	}
 })
 
-router.get('/tasks', async (req, res) => {
+router.get('/tasks', auth, async (req, res) => {
 	try {
-		const tasks = await Task.find({})
-		res.status(200).send(tasks)
+		// const tasks = await Task.find({ owner: req.user._id })
+		await req.user.populate('tasks_user').execPopulate()
+		res.status(200).send(req.user.tasks_user)
 	} catch (error){
 		res.status(500).send(error)
 	}
 })
 
-router.get('/tasks/:id', async (req, res) => {
+router.get('/tasks/:id', auth, async (req, res) => {
 	const _id = req.params.id
 
 	try {
-		const task = await Task.findById(_id)
+		const task = await Task.findOne({ _id, owner: req.user._id })
+
 		if(!task){
 			return res.status(404).send()
 		}
+
 		res.status(200).send(task)
 	} catch(error) {
 		res.status(500).send(error)
 	}
 })
 
-router.patch('/tasks/:id', async (req, res) => {
+router.patch('/tasks/:id', auth, async (req, res) => {
 	const updates = Object.keys(req.body)
 	const allowedUpdates = ['description', 'completed']
 	const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
@@ -52,22 +55,17 @@ router.patch('/tasks/:id', async (req, res) => {
 	const _id = req.params.id
 
 	try {
-		const task = await Task.findById(req.params.id)
-
-		updats.forEach((updateVariable) => {
-			task[updateVariable] = req.body[updateVariable]
-		})
-
-		await task.save()
-
-		// const task = await Task.findByIdAndUpdate(_id, req.body, {
-		// 	new: true,
-		// 	runValidators: true
-		// })
+		const task = await Task.findOne({_id: req.params.id, owner: req.user._id})
 
 		if(!task){
 			return res.status(404).send()
 		}
+
+		updates.forEach((updateVariable) => {
+			task[updateVariable] = req.body[updateVariable]
+		})
+
+		await task.save()
 
 		res.status(200).send(task)
 
@@ -76,11 +74,11 @@ router.patch('/tasks/:id', async (req, res) => {
 	}
 })
 
-router.delete('/tasks/:id', async(req, res) => {
+router.delete('/tasks/:id', auth, async(req, res) => {
 	const _id = req.params.id
 
 	try {
-		const task = await Task.findByIdAndDelete(_id, req.body)
+		const task = await Task.findOneAndDelete({_id, owner: req.user._id})
 
 		if(!task){
 			return res.status(404).send()
