@@ -3,7 +3,7 @@ const User = require('../models/User')
 const auth = require('../middleware/auth')
 const router = new express.Router()
 
-router.post('/users/me',auth, async (req, res) => {
+router.post('/users/profile',auth, async (req, res) => {
 	res.send(req.user)
 })
 
