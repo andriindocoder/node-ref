@@ -1,17 +1,17 @@
-const request = require('request-promise');
-const cheerio = require('cheerio');
+const fs = require('fs')
+const rp = require('request-promise')
 
-async function scrape() {
-	for(let index=0; index<= 360; index + 120){
-		const html = await request.get("https://sfbay.craigslist.org/search/vol?s=" + index)
-		const $ = await cheerio.load(html);
-
-		$(".result-title").each((index, element) => {
-			console.log($(element).text())
-		})
-		console.log("Page " + index)
-	}
-	
+async function main() {
+	const result = rp({
+	            resolveWithFullResponse: true,
+	            uri: 'https://craigslist.com',
+	            agentOptions: {
+	                socksHost: "139.196.120.52", // Defaults to 'localhost'.
+	                socksPort: "8080" // Defaults to 1080.
+	            }
+	        }).then((hasil) => {
+				fs.writeFileSync("./test4.html", hasil.body);
+	        })
 }
 
-scrape();
+main();
