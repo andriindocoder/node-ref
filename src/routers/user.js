@@ -17,6 +17,16 @@ router.post('/users/login', async(req, res) => {
 	}
 })
 
+router.post('/users/logout', auth, async(req, res) => {
+	try {
+		req.user.tokens = req.user.tokens.filter((token) => {
+			return token.token != req.token
+		})
+	} catch(e) {
+		console.log(e)
+	}
+})
+
 router.get('/users', auth, async (req, res) => {
 	try {
 		const users = await User.find({})
