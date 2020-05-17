@@ -3,8 +3,7 @@ const User = require('../models/User')
 
 const auth = async (req, res, next) => {
 	try {
-		const token = req.header('Authentication').replace('Bearer ','')
-		console.log(token)
+		const token = req.header('Authorization').replace('Bearer ','')
 		const decoded = jwt.verify(token, 'thisissparta')
 		const user = await User.findOne({ _id: decoded._id, 'tokens.token': token })
 
@@ -16,7 +15,7 @@ const auth = async (req, res, next) => {
 		req.user = user
 		next()
 	} catch(e) {
-		res.status(401).send({ error: 'Unauthenticated.' })
+		res.status(401).send({ error: 'Ga dapet auth.' })
 	}
 }
 
