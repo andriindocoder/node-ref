@@ -15,8 +15,8 @@ app.listen(port, () => {
 	console.log('Server is running on port ' + port)
 })
 
-const Task = require('./models/task')
-const User = require('./models/User')
+const Task = mongoose.model('Task')
+const User = mongoose.model('User')
 
 const main = async() => {
 	// const task = await Task.findById('5ec13a0f28f6de1546fa1ad7')
