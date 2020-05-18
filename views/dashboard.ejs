@@ -1,3 +1,59 @@
 <h1 class="mt-4">Dashboard</h1>
 <p class="lead mb-3">Welcome <%= name %></p>
-<a href="/users/logout" class="btn btn-secondary">Logout</a>
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Lucky Draw Campaign Submission</h3>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body table-responsive p-0">
+        <table class="table table-hover text-nowrap">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>User</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Remark</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>183</td>
+              <td>John Doe</td>
+              <td>18 May 2020</td>
+              <td><span style="color: white;" class="badge bg-success">Approved</span></td>
+              <td>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium, modi.</td>
+            </tr>
+            <tr>
+              <td>219</td>
+              <td>Alexander Pierce</td>
+              <td>18 May 2020</td>
+              <td><span class="badge bg-warning">Pending</span></td>
+              <td>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repudiandae, perferendis!</td>
+            </tr>
+            <tr>
+              <td>657</td>
+              <td>Bob Doe</td>
+              <td>18 May 2020</td>
+              <td><span style="color: white;" class="badge bg-success">Approved</span></td>
+              <td>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sequi, aliquid!</td>
+            </tr>
+            <tr>
+              <td>175</td>
+              <td>Mike Doe</td>
+              <td>18 May 2020</td>
+              <td><span style="color: white;" class="badge bg-danger">Denied</span></td>
+              <td>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sed, nostrum.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+  </div>
+</div>
+
+<a style="margin-top: 15px;" href="/users/logout" class="btn btn-secondary">Logout</a>
