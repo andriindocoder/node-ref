@@ -1,0 +1,38 @@
+<%- include("partials/header") %>
+  <body>
+  	<div class="container">
+	    <h1><%= title %></h1>
+	    <p>Welcome to <%= title %></p>
+	    <table class="table table-bordered">
+	    	<thead>
+	    		<tr>
+	    			<th>No</th>
+	    			<th>Judul</th>
+	    			<th>Konten</th>
+	    			<th>Action</th>
+	    		</tr>
+	    	</thead>
+	    	<tbody>
+	    		<% if(data.length){
+	    			var no = 0;
+	    			for(var i=0; i<data.length; i++){
+	    				no++;
+	    		%>
+	    		<tr>
+	    			<td><%=no%></td>
+	    			<td><%=data[i].judul%></td>
+	    			<td><%=data[i].konten%></td>
+	    			<td>
+	    				<a href="/edit/<%= data[i].id%>" class="btn btn-secondary btn-sm">Edit</a>
+	    				<a href="/delete/<%= data[i].id%>" class="btn btn-danger btn-sm">Delete</a>
+	    			</td>
+	    		</tr>
+	    		<% 
+	    			} 
+	    		} 
+	    		%>
+	    	</tbody>
+	    </table>
+  	</div>
+  </body>
+<%- include("partials/footer") %>
