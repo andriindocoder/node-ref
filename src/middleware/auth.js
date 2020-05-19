@@ -20,3 +20,7 @@ const auth = async (req, res, next) => {
 }
 
 module.exports = auth
+
+/*
+MongoDB Compass : Sama kayak Robo3T
+*/
