@@ -1,12 +1,15 @@
 const request = require('request-promise');
 const cheerio = require('cheerio');
+const Nightmare = require('nightmare');
+const nightmare = Nightmare({show: true});
 
 const sampleResult = {
 	title: "Bohemian Rapsody",
 	rank: 1,
 	imdbRating: 8.4,
 	descriptionUrl: "https://www.imdb.com/title/tt1727824/",
-	posterUrl: "https://m.media-amazon.com/images/M/MV5BMTA2NDc3Njg5NDVeQTJeQWpwZ15BbWU4MDc1NDcxNTUz._V1_SY1000_CR0,0,674,1000_AL_.jpg"
+	posterUrl: "https://m.media-amazon.com/images/M/MV5BMTA2NDc3Njg5NDVeQTJeQWpwZ15BbWU4MDc1NDcxNTUz._V1_SY1000_CR0,0,674,1000_AL_.jpg",
+	posterImageUrl: "https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDIzLWFmNTEtODM1ZmRlYWMwMWFmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg"
 }
 
 async function scrapeTitlesRanksAndRatings() {
@@ -39,9 +42,27 @@ async function scrapePosterUrl(movies) {
 	return moviesWithPosterUrls;
 }
 
+async function scrapePosterImageUrl(movies) {
+	for(var i=0; i < movies.length; i++){
+		try {
+			const posterImageUrl = await nightmare.goto(movies[i].posterUrl).evaluate(() => {
+				$("#photo-container > div > div:nth-child(3) > div > div.pswp__scroll-wrap > div.pswp__container > div:nth-child(2) > div > img:nth-child(2)").attr("src");
+			});
+			movies[i].posterImageUrl = posterImageUrl;
+		} catch(e) {
+			console.log(e);
+		}
+	}
+
+	return movies;
+
+}
+
 async function main() {
 	let movies = await scrapeTitlesRanksAndRatings();
 	movies = await scrapePosterUrl(movies);
+	movies = await scrapePosterImageUrl(movies);
+
 	console.log(movies);
 }
 
