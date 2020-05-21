@@ -17,8 +17,9 @@ async function scrapeTitlesRanksAndRatings() {
 	const movies = $("tr")
 		.map((i, element) => {
 			const title = $(element).find("td.titleColumn > a").text();
+			const descriptionUrl = "https://imdb.com" + $(element).find("td.titleColumn > a").attr("href");
 			const imdbRating = $(element).find("td.ratingColumn.imdbRating").text().trim();
-			return { title, imdbRating };
+			return { title, imdbRating, rank: i, descriptionUrl };
 		}).get();
 
 	console.log(movies);
