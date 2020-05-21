@@ -22,7 +22,27 @@ async function scrapeTitlesRanksAndRatings() {
 			return { title, imdbRating, rank: i, descriptionUrl };
 		}).get();
 
+	return movies;
+}
+
+async function scrapePosterUrl(movies) {
+	const moviesWithPosterUrls = await Promise.all(movies.map(async movie => {
+		try {
+			const html = await request.get(movie.descriptionUrl);
+			const $ = cheerio.load(html);
+			movie.posterUrl = "https://imdb.com" + $("div.poster > a").attr("href");
+			return movie;
+		} catch(e) {
+			console.log(e);
+		}
+	}))
+	return moviesWithPosterUrls;
+}
+
+async function main() {
+	let movies = await scrapeTitlesRanksAndRatings();
+	movies = await scrapePosterUrl(movies);
 	console.log(movies);
 }
 
-scrapeTitlesRanksAndRatings();
+main();
