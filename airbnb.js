@@ -32,6 +32,7 @@ async function scrapeHomesInIndexPage(url) {
 }
 
 async function scrapeDescriptionPage(url, page) {
+	let roomText;
 	try {
 		await page.goto(url, { waitUntil: "networkidle2"} );
 		const html = await page.evaluate(() => document.body.innerHTML);
@@ -39,21 +40,31 @@ async function scrapeDescriptionPage(url, page) {
 
 		const pricePerNight = $("#site-content > div > div > div > div > div > div > div > div:nth-child(1) > div > div > div > div > div > div > div > div > span > span").text();
 
-		const roomText = $("#room").text();
+		roomText = $("#room").text();
 
-		const guestMatches = roomText.match(/\d+ guest/);
+		const guestAllowed = returnMatches(roomText, /\d+ guest/);
+		const bedrooms = returnMatches(roomText, /\d+ bedroom/);
+		const baths = returnMatches(roomText, /\d+ (shared )?bath/);
+		const beds = returnMatches(roomText, /\d+ bed/);
 
-		let guestAllowed = "N/A";
-
-		if(guestMatches.length > 0) {
-			guestAllowed = guestMatches[0];
-		}
-
-		return {pricePerNight, guestAllowed};
+		return {url, guestAllowed, bedrooms, baths, beds, pricePerNight};
 
 	} catch(err) {
+		console.log(roomText);
+		console.log(url);
 		console.log(err);
 	}
+}
+
+function returnMatches(roomText, regex){
+	const regExMatches = roomText.match(regex);
+	let result = "N/A";
+	if(regExMatches != null) {
+		result = regExMatches[0];
+	} else {
+		throw `No regex matches found for: ${regex}`
+	}
+	return result;
 }
 
 async function main() {
@@ -62,7 +73,7 @@ async function main() {
 
 	const homes = await scrapeHomesInIndexPage("https://www.airbnb.com/s/Bandung--Indonesia/homes?tab_id=home_tab&refinement_paths%5B%5D=%2Fhomes&federated_search_session_id=5435bcc6-077d-4db6-ac68-84f2636227cc&query=Coblong%2C%20Indonesia&place_id=ChIJmf04qv7maC4RFjBonBrwznU&section_offset=4&items_offset=20&search_type=pagination");
 	for(var i=0; i < homes.length; i++) {
-		await scrapeDescriptionPage(homes[i], descriptionPage);
+		const result = await scrapeDescriptionPage(homes[i], descriptionPage);
 	}
 }
 
