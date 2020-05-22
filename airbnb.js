@@ -16,7 +16,7 @@ let browser;
 async function scrapeHomesInIndexPage(url) {
 	try{
 		const page = await browser.newPage();
-		page.goto(url);
+		await page.goto(url, { waitUntil: "networkidle2"});
 		const html = await page.evaluate(() => document.body.innerHTML);
 		const $ = await cheerio.load(html);
 
@@ -38,6 +38,18 @@ async function scrapeDescriptionPage(url, page) {
 		const $ = await cheerio.load(html);
 
 		const pricePerNight = $("#site-content > div > div > div > div > div > div > div > div:nth-child(1) > div > div > div > div > div > div > div > div > span > span").text();
+
+		const roomText = $("#room").text();
+
+		const guestMatches = roomText.match(/\d+ guest/);
+
+		let guestAllowed = "N/A";
+
+		if(guestMatches.length > 0) {
+			guestAllowed = guestMatches[0];
+		}
+
+		return {pricePerNight, guestAllowed};
 
 	} catch(err) {
 		console.log(err);
