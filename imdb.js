@@ -1,9 +1,9 @@
-const request = require('request-promise');
-const regularRequest = require('request');
-const fs = require('fs');
-const cheerio = require('cheerio');
 const Nightmare = require('nightmare');
 const nightmare = Nightmare({show: true});
+const request = require('request-promise');
+const regularRequest = require('request');
+const cheerio = require('cheerio');
+const fs = require('fs');
 
 const sampleResult = {
 	title: "Bohemian Rapsody",
@@ -15,7 +15,7 @@ const sampleResult = {
 }
 
 async function scrapeTitlesRanksAndRatings() {
-	const result = await request.get("https://www.imdb.com/chart/top?pf_rd_m=A2FGELUUNOQJNL&pf_rd_p=4da9d9a5-d299-43f2-9c53-f0efa18182cd&pf_rd_r=Y2P73GXPCWDKT4RRX0XV&pf_rd_s=right-4&pf_rd_t=15506&pf_rd_i=moviemeter&ref_=chtmvm_ql_3");
+	const result = await request.get("https://www.imdb.com/chart/top/?ref_=nv_mv_250");
 
 	const $ = await cheerio.load(result);
 
@@ -31,22 +31,23 @@ async function scrapeTitlesRanksAndRatings() {
 }
 
 async function scrapePosterUrl(movies) {
-	const moviesWithPosterUrls = await Promise.all(movies.map(async movie => {
+	const moviesWithPosterUrls = await Promise.all(
+		movies.map(async movie => {
 		try {
 			const html = await request.get(movie.descriptionUrl);
 			const $ = cheerio.load(html);
-			movie.posterUrl = "https://imdb.com" + $("div.poster > a").attr("href");
+			movie.posterUrl = $("div.poster > a").attr("href");
 			return movie;
 		} catch(e) {
 			console.log(e);
 		}
-	}))
+	}));
 	return moviesWithPosterUrls;
 }
 
 async function scrapePosterImageUrl(movies) {
-	// for(var i=0; i < movies.length; i++){
-	for(var i=0; i < 9; i++){
+	for(var i=0; i < movies.length; i++){
+	// for(var i=0; i < 9; i++){
 		try {
 			const posterImageUrl = await nightmare.goto(movies[i].posterUrl).evaluate(() => {
 				$("#photo-container > div > div:nth-child(3) > div > div.pswp__scroll-wrap > div.pswp__container > div:nth-child(2) > div > img:nth-child(2)").attr("src");
@@ -62,7 +63,7 @@ async function scrapePosterImageUrl(movies) {
 
 }
 
-async function savePosterImageToDisk() {
+async function savePosterImageToDisk(movie) {
 	regularRequest
 		.get(movie.posterImageUrl)
 		.pipe(fs.createWriteStream(`posters/${movie.rank}.png`));
@@ -71,7 +72,7 @@ async function savePosterImageToDisk() {
 async function main() {
 	let movies = await scrapeTitlesRanksAndRatings();
 	movies = await scrapePosterUrl(movies);
-	movies = await scrapePosterImageUrl(movies);
+	// movies = await scrapePosterImageUrl(movies);
 
 	console.log(movies);
 }
