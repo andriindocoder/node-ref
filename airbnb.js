@@ -33,7 +33,12 @@ async function scrapeHomesInIndexPage(url) {
 
 async function scrapeDescriptionPage(url, page) {
 	try {
-		await page.goto(url);
+		await page.goto(url, { waitUntil: "networkidle2"} );
+		const html = await page.evaluate(() => document.body.innerHTML);
+		const $ = await cheerio.load(html);
+
+		const pricePerNight = $("#site-content > div > div > div > div > div > div > div > div:nth-child(1) > div > div > div > div > div > div > div > div > span > span").text();
+
 	} catch(err) {
 		console.log(err);
 	}
