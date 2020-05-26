@@ -27,4 +27,42 @@ const getBooks = ({response} : {response: any}) => {
     }
 }
 
-export { getBooks }
+// @desc GET single book
+// @route GET api/v1/books/:id
+const getBook = ({params, response} : {params: {id:string}, response: any}) => {
+    const book: Book | undefined = books.find(p => p.id === params.id)
+
+    if(book) {
+        response.status = 200
+        response.body = {
+            success: true,
+            data: book
+        }
+    } else {
+        response.status = 404
+        response.body = {
+            success: false,
+            msg: 'No book found'
+        }
+    }
+}
+
+// @desc Add book
+// @route POST api/v1/books
+const addBook = ({response} : {response: any}) => {
+    
+}
+
+// @desc Update book
+// @route PUT api/v1/books/:id
+const updateBook = ({response} : {response: any}) => {
+    
+}
+
+// @desc Delete book
+// @route DELETE api/v1/books/:id
+const deleteBook = ({response} : {response: any}) => {
+    
+}
+
+export { getBooks, getBook, addBook, updateBook, deleteBook }
