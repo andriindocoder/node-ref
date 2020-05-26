@@ -73,8 +73,28 @@ const addBook = async ({request, response} : {request: any, response: any}) => {
 
 // @desc Update book
 // @route PUT api/v1/books/:id
-const updateBook = ({response} : {response: any}) => {
-    
+const updateBook = async({params, request, response} : {params: {id:string}, request: any, response: any}) => {
+    const book: Book | undefined = books.find(p => p.id === params.id)
+
+    if(book) {
+        const body = await request.body()
+
+        const updateData: { title?: string; author?:string} = body.value
+
+        books = books.map(p => p.id === params.id ? { ...p, ...updateData} : p)
+
+        response.status = 200
+        response.body = {
+            success: true,
+            data: books
+        }
+    } else {
+        response.status = 404
+        response.body = {
+            success: false,
+            msg: 'No book found'
+        }
+    }
 }
 
 // @desc Delete book
