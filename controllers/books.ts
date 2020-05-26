@@ -99,8 +99,12 @@ const updateBook = async({params, request, response} : {params: {id:string}, req
 
 // @desc Delete book
 // @route DELETE api/v1/books/:id
-const deleteBook = ({response} : {response: any}) => {
-    
+const deleteBook = ({params, response} : {params: { id: string}, response: any}) => {
+    books = books.filter(p => p.id !== params.id)
+    response.body = {
+        success: true,
+        msg: 'Books removed'
+    }
 }
 
 export { getBooks, getBook, addBook, updateBook, deleteBook }
