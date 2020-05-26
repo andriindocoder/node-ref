@@ -1,3 +1,4 @@
+import { v4 } from 'https://deno.land/std/uuid/mod.ts'
 import { Book } from '../types.ts';
 
 let books: Book[] = [
@@ -49,8 +50,25 @@ const getBook = ({params, response} : {params: {id:string}, response: any}) => {
 
 // @desc Add book
 // @route POST api/v1/books
-const addBook = ({response} : {response: any}) => {
-    
+const addBook = async ({request, response} : {request: any, response: any}) => {
+    const body = await request.body()
+
+    if(!request.hasBody) {
+        response.status = 400
+        response.body = {
+            success: false,
+            msg: 'No Data'
+        }
+    } else {
+        const book: Book = body.value
+        book.id = v4.generate()
+        books.push(book)
+        response.status = 201
+        response.body = {
+            success: true,
+            data: book
+        }
+    }
 }
 
 // @desc Update book
